@@ -1,0 +1,44 @@
+name: monad-http
+version: 0.0.0.0
+synopsis: A class of monads which can do http requests
+description: A class of monads which can do http requests
+author: Oleg Grenrus <oleg.grenrus@iki.fi>
+maintainer: Oleg Grenrus <oleg.grenrus@iki.fi>
+license: BSD3
+github: futurice/haskell-monad-http
+category: Web
+tested-with: GHC==7.8.4, GHC==7.10.2
+extra-source-files:
+- README.md
+
+ghc-options: -Wall
+
+dependencies:
+- base >=4.7 && <4.9
+- SHA >=1.6 && <1.7
+- QuickCheck >=2.7 && <2.9
+- bytestring
+- case-insensitive >=1.2 && <1.3
+- binary
+- deepseq
+- directory
+- exceptions >=0.8 && <0.9
+- monad-logger >=0.3 && <0.4
+- filepath
+- http-client >=0.4 && <0.5
+- http-types >=0.8 && <0.9
+- text >=1.2 && <1.3
+- transformers
+- transformers-compat
+
+library:
+  source-dirs: src
+
+tests:
+  monad-http-tests:
+    source-dirs: test
+    main:  Tests.hs
+    dependencies:
+      - monad-http
+      - tasty
+      - tasty-quickcheck
