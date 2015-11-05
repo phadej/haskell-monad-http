@@ -7,38 +7,26 @@ maintainer: Oleg Grenrus <oleg.grenrus@iki.fi>
 license: BSD3
 github: futurice/haskell-monad-http
 category: Web
-tested-with: GHC==7.8.4, GHC==7.10.2
+tested-with: GHC==7.8.4, GHC==7.10.2, GHC==7.10.3
 extra-source-files:
 - README.md
 
 ghc-options: -Wall
 
 dependencies:
-- base >=4.7 && <4.9
-- SHA >=1.6 && <1.7
-- QuickCheck >=2.7 && <2.9
-- bytestring
-- case-insensitive >=1.2 && <1.3
-- binary
-- deepseq
-- directory
-- exceptions >=0.8 && <0.9
-- monad-logger >=0.3 && <0.4
-- filepath
-- http-client >=0.4 && <0.5
-- http-types >=0.8 && <0.9
-- text >=1.2 && <1.3
-- transformers
-- transformers-compat
+- base                >=4.7      && <4.9
+- base-compat         >=0.6.0    && <0.9
+- bytestring          >=0.10.0.4 && <0.12
+- exceptions          >=0.8.0.2  && <0.9
+- http-client         >=0.4.18.1 && <0.5
+- http-types          >=0.8.6    && <0.10
+- monad-logger        >=0.3.13.2 && <0.4
+- monadcryptorandom   >=0.6.1    && <0.8
+- MonadRandom         >=0.3.0.2  && <0.5
+- mtl                 >=2.1.3.1  && <2.3
+- text                >=1.2.0.6  && <1.3
+- transformers        >=0.3.0.0  && <0.5
+- transformers-compat >=0.4.0.3  && <0.5
 
 library:
   source-dirs: src
-
-tests:
-  monad-http-tests:
-    source-dirs: test
-    main:  Tests.hs
-    dependencies:
-      - monad-http
-      - tasty
-      - tasty-quickcheck
