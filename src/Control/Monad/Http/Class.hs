@@ -25,14 +25,13 @@ import Control.Monad.Trans.Reader (ReaderT (..))
 import Control.Monad.Trans.RWS    (RWST (..))
 import Control.Monad.Trans.State  (StateT (..))
 import Control.Monad.Trans.Writer (WriterT (..))
+import Control.Monad.Trans.Error  (ErrorT (..), Error)
 
 import qualified Control.Monad.Trans.RWS.Strict    as Strict (RWST (..))
 import qualified Control.Monad.Trans.State.Strict  as Strict (StateT (..))
 import qualified Control.Monad.Trans.Writer.Strict as Strict (WriterT (..))
 
-#if MIN_VERSION_monadcryptorandom(0, 7, 0)
 import Control.Monad.CryptoRandom (CRandT (..))
-#endif
 
 import Control.Monad.Logger (LoggingT (..), NoLoggingT (..))
 import Control.Monad.Random (RandT, liftRandT, runRandT)
@@ -121,6 +120,11 @@ instance MonadHttp m => MonadHttp (ExceptT e m) where
         ExceptT $ withResponse req $ \res ->
             runExceptT (f $ fmap lift res)
 
+instance (MonadHttp m, Error e) => MonadHttp (ErrorT e m) where
+    withResponse req f =
+        ErrorT $ withResponse req $ \res ->
+            runErrorT (f $ fmap lift res)
+
 instance
 #if MIN_VERSION_MonadRandom(0, 4, 0)
   MonadHttp m
@@ -135,6 +139,11 @@ instance
 
 #if MIN_VERSION_monadcryptorandom(0, 7, 0)
 instance MonadHttp m => MonadHttp (CRandT g e m) where
+    withResponse req f =
+        CRandT $ withResponse req $ \res ->
+            unCRandT (f $ fmap CRandT res)
+#else
+instance (MonadHttp m, Error e) => MonadHttp (CRandT g e m) where
     withResponse req f =
         CRandT $ withResponse req $ \res ->
             unCRandT (f $ fmap CRandT res)
