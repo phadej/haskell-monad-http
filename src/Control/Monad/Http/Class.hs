@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP           #-}
 {-# LANGUAGE GADTs         #-}
 {-# LANGUAGE TupleSections #-}
+{-# OPTIONS_GHC -fno-warn-warnings-deprecations #-}
 module Control.Monad.Http.Class (
     MonadHttp(..),
     BodyReaderM,
