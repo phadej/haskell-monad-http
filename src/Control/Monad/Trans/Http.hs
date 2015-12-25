@@ -2,12 +2,18 @@
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE UndecidableInstances  #-}
-module Control.Monad.Trans.Http (HttpT(..), mapHttpT, liftHttpT) where
+module Control.Monad.Trans.Http (
+    HttpT(..),
+    evalHttpT,
+    mapHttpT,
+    liftHttpT,
+    ) where
 
 import Prelude        ()
 import Prelude.Compat
 
-import qualified Network.HTTP.Client as H
+import qualified Network.HTTP.Client     as H
+import qualified Network.HTTP.Client.TLS as H
 
 import Control.Monad.Cont.Class   (MonadCont (..))
 import Control.Monad.IO.Class     (MonadIO (..))
@@ -30,7 +36,12 @@ import Control.Monad.Random.Class (MonadRandom(..), MonadSplit(..))
 
 import Control.Monad.CryptoRandom (MonadCRandom(..), MonadCRandomR(..))
 
+-- | Http monad transformer, essentially 'ReaderT' 'H.Manager'.
 newtype HttpT m a = HttpT { runHttpT :: H.Manager -> m a }
+
+-- | Lower 'HttpT' with default 'H.Manager' created with 'H.tlsManagerSettings'.
+evalHttpT :: MonadIO m => HttpT m a -> m a
+evalHttpT m = liftIO (H.newManager H.tlsManagerSettings) >>= runHttpT m
 
 instance Functor m => Functor (HttpT m) where
     fmap f = mapHttpT (fmap f)

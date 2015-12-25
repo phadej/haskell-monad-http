@@ -19,6 +19,7 @@ module Control.Monad.Http (
     BodyReaderM,
     -- * Transformer
     HttpT(..),
+    evalHttpT,
     -- * Utilities
     httpLbs,
     brConsume,
