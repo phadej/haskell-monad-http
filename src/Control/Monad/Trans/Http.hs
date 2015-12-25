@@ -32,9 +32,9 @@ import Control.Monad.Error (MonadError (..))
 import Control.Monad.Catch  (MonadCatch (..), MonadMask (..), MonadThrow (..))
 import Control.Monad.Logger (MonadLogger (..), MonadLoggerIO (..))
 
-import Control.Monad.Random.Class (MonadRandom(..), MonadSplit(..))
+import Control.Monad.Random.Class (MonadRandom (..), MonadSplit (..))
 
-import Control.Monad.CryptoRandom (MonadCRandom(..), MonadCRandomR(..))
+import Control.Monad.CryptoRandom (MonadCRandom (..), MonadCRandomR (..))
 
 -- | Http monad transformer, essentially 'ReaderT' 'H.Manager'.
 newtype HttpT m a = HttpT { runHttpT :: H.Manager -> m a }

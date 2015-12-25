@@ -28,6 +28,6 @@ module Control.Monad.Http (
     Response(..),
     ) where
 
-import Control.Monad.Trans.Http
 import Control.Monad.Http.Class
-import Network.HTTP.Client (Request(..), Response(..))
+import Control.Monad.Trans.Http
+import Network.HTTP.Client      (Request (..), Response (..))

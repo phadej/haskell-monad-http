@@ -22,11 +22,11 @@ import Control.Monad.Trans.Except   (ExceptT (..), runExceptT)
 import Control.Monad.Trans.Identity (IdentityT (..))
 import Control.Monad.Trans.Maybe    (MaybeT (..))
 
+import Control.Monad.Trans.Error  (Error, ErrorT (..))
 import Control.Monad.Trans.Reader (ReaderT (..))
 import Control.Monad.Trans.RWS    (RWST (..))
 import Control.Monad.Trans.State  (StateT (..))
 import Control.Monad.Trans.Writer (WriterT (..))
-import Control.Monad.Trans.Error  (ErrorT (..), Error)
 
 import qualified Control.Monad.Trans.RWS.Strict    as Strict (RWST (..))
 import qualified Control.Monad.Trans.State.Strict  as Strict (StateT (..))
@@ -91,12 +91,12 @@ instance MonadHttp m => MonadHttp (Strict.StateT r m) where
 
 instance (MonadHttp m, Monoid w) => MonadHttp (WriterT w m) where
     withResponse req f =
-        WriterT $ withResponse req $ \res -> do
+        WriterT $ withResponse req $ \res ->
             runWriterT (f $ fmap lift res)
 
 instance (MonadHttp m, Monoid w) => MonadHttp (Strict.WriterT w m) where
     withResponse req f =
-        Strict.WriterT $ withResponse req $ \res -> do
+        Strict.WriterT $ withResponse req $ \res ->
             Strict.runWriterT (f $ fmap lift res)
 
 instance (MonadHttp m, Monoid w) => MonadHttp (RWST r w s m) where
