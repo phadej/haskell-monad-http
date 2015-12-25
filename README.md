@@ -5,4 +5,4 @@
 [![Stackage LTS 3](http://stackage.org/package/monad-http/badge/lts-3)](http://stackage.org/lts-3/package/monad-http)
 [![Stackage Nightly](http://stackage.org/package/monad-http/badge/nightly)](http://stackage.org/nightly/package/monad-http)
 
-A `MonadHTTP` class. Also transformer to add caching.
+A `MonadHTTP` class.
