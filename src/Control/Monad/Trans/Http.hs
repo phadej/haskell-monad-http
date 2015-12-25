@@ -2,6 +2,13 @@
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE UndecidableInstances  #-}
+----------------------------------------------------------------------------
+-- |
+-- Copyright   :  (C) 2015 Futurice Oy
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+----------------------------------------------------------------------------
 module Control.Monad.Trans.Http (
     HttpT(..),
     evalHttpT,

@@ -2,6 +2,13 @@
 {-# LANGUAGE GADTs         #-}
 {-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -fno-warn-warnings-deprecations #-}
+----------------------------------------------------------------------------
+-- |
+-- Copyright   :  (C) 2015 Futurice Oy
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+----------------------------------------------------------------------------
 module Control.Monad.Http.Class (
     MonadHttp(..),
     BodyReaderM,
@@ -49,6 +56,7 @@ type BodyReaderM m = m S.ByteString
 -- MonadHttp
 ------------------------------------------------------------------------------
 
+-- | The monad capable to do HTTP requests.
 class
 #if MIN_VERSION_base(4,8,0)
   Monad m

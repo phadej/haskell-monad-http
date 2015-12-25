@@ -6,8 +6,7 @@
 {-# LANGUAGE UndecidableInstances  #-}
 ----------------------------------------------------------------------------
 -- |
--- Module      :  Control.Monad.HTTP
--- Copyright   :  (C) 2015 Oleg Grenrus
+-- Copyright   :  (C) 2015 Futurice Oy
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
