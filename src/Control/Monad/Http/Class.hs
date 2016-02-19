@@ -1,6 +1,7 @@
-{-# LANGUAGE CPP           #-}
-{-# LANGUAGE GADTs         #-}
-{-# LANGUAGE TupleSections #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GADTs             #-}
+{-# LANGUAGE TupleSections     #-}
 {-# OPTIONS_GHC -fno-warn-warnings-deprecations #-}
 ----------------------------------------------------------------------------
 -- |
@@ -19,6 +20,9 @@ module Control.Monad.Http.Class (
 
 import Prelude        ()
 import Prelude.Compat
+
+import Control.Monad.IO.Class    (MonadIO (..))
+import Control.Monad.Operational (ProgramT, singleton)
 
 import qualified Data.ByteString      as S
 import qualified Data.ByteString.Lazy as L
@@ -49,7 +53,8 @@ import Control.Monad.Random (RandT, liftRandT, runRandT)
 import Control.Monad.Random (RandomGen)
 #endif
 
-import Control.Monad.Trans.Http (HttpT (..), liftHttpT)
+import Control.Monad.Http.Operational (HttpInstr (..))
+import Control.Monad.Trans.Http       (HttpT (..), liftHttpT)
 
 type BodyReaderM m = m S.ByteString
 
@@ -234,9 +239,23 @@ brConsume brRead' =
 -- HttpT
 ------------------------------------------------------------------------------
 
--- | /TODO:/ Generalise to MonadIO + MonadMask?
-instance m ~ IO => MonadHttp (HttpT m) where
-    httpLbs = HttpT . H.httpLbs
+instance
+#if MIN_VERSION_base(4,8,0)
+  MonadIO m
+#else
+  (Applicative m, MonadIO m)
+#endif
+  => MonadHttp (HttpT m) where
+    httpLbs req = HttpT (liftIO . H.httpLbs req)
 
+-- | /TODO:/ Generalise to MonadIO + MonadMask?
 instance m ~ IO => MonadStreamingHttp (HttpT m) where
     withResponse req f = HttpT (\mgr -> H.withResponse req mgr (flip runHttpT mgr . f . fmap liftHttpT))
+
+------------------------------------------------------------------------------
+-- HttpOpT
+------------------------------------------------------------------------------
+
+-- | 'HttpOpT'
+instance Monad m => MonadHttp (ProgramT HttpInstr m) where
+    httpLbs = singleton . HttpLbs

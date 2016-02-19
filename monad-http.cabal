@@ -3,7 +3,7 @@
 -- see: https://github.com/sol/hpack
 
 name:                monad-http
-version:             0.1.0.0
+version:             0.2.0.0
 synopsis:            A class of monads which can do http requests
 description:         A class of monads which can do http requests
 homepage:            https://github.com/futurice/haskell-monad-http#readme
@@ -18,6 +18,7 @@ build-type:          Simple
 cabal-version:       >= 1.10
 
 extra-source-files:
+  CHANGELOG.md
   README.md
 
 source-repository head
@@ -39,6 +40,7 @@ library
     monad-logger        >=0.3.13.2 && <0.4,
     monadcryptorandom   >=0.6.1    && <0.8,
     MonadRandom         >=0.3.0.2  && <0.5,
+    operational         >=0.2.3.2  && <0.3,
     mtl                 >=2.1.3.1  && <2.3,
     text                >=1.2.0.6  && <1.3,
     transformers        >=0.3.0.0  && <0.6,
@@ -46,5 +48,6 @@ library
   exposed-modules:
     Control.Monad.Http
     Control.Monad.Http.Class
+    Control.Monad.Http.Operational
     Control.Monad.Trans.Http
   default-language: Haskell2010
