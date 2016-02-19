@@ -15,12 +15,13 @@
 module Control.Monad.Http (
     -- * Class
     MonadHttp(..),
+    MonadStreamingHttp(..),
     BodyReaderM,
     -- * Transformer
     HttpT(..),
     evalHttpT,
     -- * Utilities
-    httpLbs,
+    defaultHttpLbs,
     brConsume,
     -- * Re-exports
     Request(..),
