@@ -1,4 +1,4 @@
--- This file has been generated from package.yaml by hpack version 0.8.0.
+-- This file has been generated from package.yaml by hpack version 0.14.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -34,8 +34,8 @@ library
     base-compat         >=0.6.0    && <0.10,
     bytestring          >=0.10.0.4 && <0.12,
     exceptions          >=0.8.0.2  && <0.9,
-    http-client         >=0.4.18.1 && <0.5,
-    http-client-tls     >=0.2.2    && <0.3,
+    http-client         >=0.4.18.1 && <0.6,
+    http-client-tls     >=0.2.2    && <0.4,
     http-types          >=0.8.6    && <0.10,
     monad-logger        >=0.3.13.2 && <0.4,
     monadcryptorandom   >=0.6.1    && <0.8,
