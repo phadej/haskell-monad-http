@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP                   #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE UndecidableInstances  #-}
 ----------------------------------------------------------------------------
 -- |
@@ -16,19 +17,23 @@ module Control.Monad.Trans.Http (
     liftHttpT,
     ) where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
 import qualified Network.HTTP.Client     as H
 import qualified Network.HTTP.Client.TLS as H
 
-import Control.Monad.Cont.Class   (MonadCont (..))
-import Control.Monad.IO.Class     (MonadIO (..))
-import Control.Monad.Reader.Class (MonadReader (..))
-import Control.Monad.RWS.Class    (MonadRWS)
-import Control.Monad.State.Class  (MonadState (..))
-import Control.Monad.Trans.Class  (MonadTrans (..))
-import Control.Monad.Writer.Class (MonadWriter (..))
+import Control.Monad.Base          (MonadBase (..), liftBaseDefault)
+import Control.Monad.Cont.Class    (MonadCont (..))
+import Control.Monad.IO.Class      (MonadIO (..))
+import Control.Monad.Reader.Class  (MonadReader (..))
+import Control.Monad.RWS.Class     (MonadRWS)
+import Control.Monad.State.Class   (MonadState (..))
+import Control.Monad.Trans.Class   (MonadTrans (..))
+import Control.Monad.Trans.Control
+       (ComposeSt, MonadBaseControl (..), MonadTransControl (..),
+       defaultLiftBaseWith, defaultRestoreM)
+import Control.Monad.Writer.Class  (MonadWriter (..))
 
 #if MIN_VERSION_mtl(2,2,0)
 import Control.Monad.Except (MonadError (..))
@@ -65,12 +70,33 @@ instance Monad m => Monad (HttpT m) where
 
 instance MonadIO m => MonadIO (HttpT m) where
     liftIO = liftHttpT . liftIO
+    {-# INLINABLE liftIO #-}
+
+instance MonadBase b m => MonadBase b (HttpT m) where
+    liftBase = liftBaseDefault
+    {-# INLINABLE liftBase #-}
+
+instance MonadTransControl HttpT where
+    type StT HttpT a = a
+    liftWith f = HttpT $ \r -> f $ \mgr -> runHttpT mgr r
+    restoreT   = HttpT . const
+    {-# INLINABLE liftWith #-}
+    {-# INLINABLE restoreT #-}
+
+instance MonadBaseControl b m => MonadBaseControl b (HttpT m) where
+    type StM (HttpT m) a = ComposeSt HttpT m a
+    liftBaseWith     = defaultLiftBaseWith
+    restoreM         = defaultRestoreM
+    {-# INLINABLE liftBaseWith #-}
+    {-# INLINABLE restoreM #-}
 
 instance MonadThrow m => MonadThrow (HttpT m) where
     throwM = liftHttpT . throwM
+    {-# INLINABLE throwM #-}
 
 instance MonadCatch m => MonadCatch (HttpT m) where
     catch m c = HttpT $ \r -> runHttpT m r `catch` \e -> runHttpT (c e) r
+    {-# INLINABLE catch #-}
 
 instance MonadMask m => MonadMask (HttpT m) where
     mask a = HttpT $ \r -> mask $ \u -> runHttpT (a $ mapHttpT u) r
@@ -85,14 +111,19 @@ instance MonadLoggerIO m => MonadLoggerIO (HttpT m) where
 
 instance MonadTrans HttpT where
     lift = liftHttpT
+    {-# INLINABLE lift #-}
 
 instance MonadReader r m => MonadReader r (HttpT m) where
-  ask = lift ask
-  local = mapHttpT . local
+    ask = lift ask
+    local = mapHttpT . local
+    {-# INLINABLE ask #-}
+    {-# INLINABLE local #-}
 
 instance MonadState s m => MonadState s (HttpT m) where
     get = lift get
     put = lift . put
+    {-# INLINABLE get #-}
+    {-# INLINABLE put #-}
 
 instance MonadCont m => MonadCont (HttpT m) where
     callCC f = HttpT $ \i -> callCC $ \c -> runHttpT (f (HttpT . const . c)) i
@@ -101,11 +132,16 @@ instance MonadError e m => MonadError e (HttpT m) where
     throwError = lift . throwError
     catchError r h =
         HttpT $ \i -> runHttpT r i `catchError` \e -> runHttpT (h e) i
+    {-# INLINABLE throwError #-}
+    {-# INLINABLE catchError #-}
 
 instance MonadWriter w m => MonadWriter w (HttpT m) where
     tell   = lift . tell
     listen = mapHttpT listen
     pass   = mapHttpT pass
+    {-# INLINABLE tell #-}
+    {-# INLINABLE listen #-}
+    {-# INLINABLE pass #-}
 
 instance MonadRWS r w s m => MonadRWS r w s (HttpT m)
 

@@ -18,7 +18,7 @@ module Control.Monad.Http.Class (
     brConsume,
 ) where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
 import Control.Monad.IO.Class    (MonadIO (..))
@@ -39,6 +39,7 @@ import Control.Monad.Trans.Reader (ReaderT (..))
 import Control.Monad.Trans.RWS    (RWST (..))
 import Control.Monad.Trans.State  (StateT (..))
 import Control.Monad.Trans.Writer (WriterT (..))
+import Log.Monad                  (LogT (..))
 
 import qualified Control.Monad.Trans.RWS.Strict    as Strict (RWST (..))
 import qualified Control.Monad.Trans.State.Strict  as Strict (StateT (..))
@@ -104,6 +105,7 @@ instance
 
 instance MonadHttp m => MonadHttp (LoggingT m) where httpLbs = lift . httpLbs
 instance MonadHttp m => MonadHttp (NoLoggingT m) where httpLbs = lift . httpLbs
+instance MonadHttp m => MonadHttp (LogT m) where httpLbs = lift . httpLbs
 
 ------------------------------------------------------------------------------
 -- MonadStreamingHttp
