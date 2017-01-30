@@ -7,6 +7,7 @@ env:
   - GHCVER=7.10.2 CABALVER=1.22
   - GHCVER=7.10.2 CABALVER=1.22 STACKAGESNAPSHOT=lts-3.12
   - GHCVER=7.10.3 CABALVER=1.22 PEDANTIC=YES
+  - GHCVER=8.0.2 CABALVER=1.24
   - GHCVER=head CABALVER=1.22
 
 matrix:
@@ -17,3 +18,4 @@ matrix:
 branches:
   only:
     - master
+    - release-0.1
