@@ -102,6 +102,12 @@ instance MonadMask m => MonadMask (HttpT m) where
     mask a = HttpT $ \r -> mask $ \u -> runHttpT (a $ mapHttpT u) r
     uninterruptibleMask a =
         HttpT $ \r -> uninterruptibleMask $ \u -> runHttpT (a $ mapHttpT u) r
+    generalBracket acquire release use = HttpT $ \r ->
+        generalBracket
+            (runHttpT acquire r)
+            (\resource exitCase -> runHttpT (release resource exitCase) r)
+            (\resource -> runHttpT (use resource) r)
+
 
 instance MonadLogger m => MonadLogger (HttpT m) where
     monadLoggerLog a b c d = liftHttpT $ monadLoggerLog a b c d
